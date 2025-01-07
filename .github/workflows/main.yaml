@@ -19,13 +19,14 @@ jobs:
       - name: Get List of Changed Files
         id: changed-files
         run: |
+          echo changed files: "CHANGED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})"
           echo "CHANGED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})" >> $GITHUB_ENV
 
       - name: Generate Matrix
         id: set-matrix
         run: |
           declare -a EXTRACTORS=()
-          echo "$CHANGED_FILES"
+          echo changed files: "$CHANGED_FILES"
           for FILE in $CHANGED_FILES; do
             case $FILE in
               pastas/projeto_1/*)
