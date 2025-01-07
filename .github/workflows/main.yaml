@@ -2,8 +2,6 @@ name: CI/CD for Extractors
 
 on:
   push:
-    paths:
-      - 'pastas/**'
     branches:
       - main
 
@@ -21,9 +19,9 @@ jobs:
       - name: Get List of Changed Files
         id: changed-files
         run: |
-          CHANGED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
+          CHANGED_FILES=$(git diff ${{ github.event.before }} ${{ github.sha }})
           echo $CHANGED_FILES
-          echo $CHANGED_FILES | read GITHUB_ENV
+          python3 -c "import os;files=os.gentenv('CHANGED_FILES');for f in files:print(f)"
 
       - name: Generate Matrix
         id: set-matrix
