@@ -1,0 +1,57 @@
+name: CI/CD for Extractors
+
+on:
+  push:
+    paths:
+      - 'pastas/**'
+    branches:
+      - main
+
+jobs:
+  determine-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Get List of Changed Files
+        id: changed-files
+        run: |
+          echo "CHANGED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})" >> $GITHUB_ENV
+
+      - name: Generate Matrix
+        id: set-matrix
+        run: |
+          declare -a EXTRACTORS=()
+          for FILE in $CHANGED_FILES; do
+            case $FILE in
+              pastas/projeto_1/*)
+                EXTRACTORS+=("{\"name\":\"projeto_1\",\"directory\":\"pastas/projeto_1\",\"environment\":\"prod\"}");;
+              pastas/projeto_2/*)
+                EXTRACTORS+=("{\"name\":\"projeto_2\",\"directory\":\"pastas/projeto_2\",\"environment\":\"dev\"}");;
+            esac
+          done
+          echo "matrix=[${EXTRACTORS[@]}]" >> $GITHUB_ENV
+          echo "::set-output name=matrix::${matrix}"
+
+  deploy:
+    needs: determine-changes
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        extractor: ${{ fromJson(needs.determine-changes.outputs.matrix) }}
+
+    environment: ${{ matrix.extractor.environment }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.9"
+      - name: Build and Deploy
+        run: |
+          echo ${{ matrix.extractor.directory }} && bash build.sh
