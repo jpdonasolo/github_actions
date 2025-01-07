@@ -21,7 +21,6 @@ jobs:
       - name: Get List of Changed Files
         id: changed-files
         run: |
-          echo changed files: "CHANGED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})"
           echo "CHANGED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})" >> $GITHUB_ENV
 
       - name: Generate Matrix
