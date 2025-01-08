@@ -34,6 +34,7 @@ jobs:
           export CHANGED_FILES=${{ steps.changed-files.outputs.CHANGED_FILES }}
           echo changed files: $CHANGED_FILES
           for FILE in $CHANGED_FILES; do
+            echo $FILE
             case $FILE in
               pastas/projeto_1)
                 EXTRACTORS+=("{"name":"projeto_1","directory":"pastas/projeto_1","environment":"prod"}");;
