@@ -1,1 +1,1 @@
-print(35D)
+print(35)
