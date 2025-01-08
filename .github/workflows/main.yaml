@@ -1,17 +1,53 @@
-name: build
-on: push
+name: CI/CD for Extractors
+
+on:
+  push:
+    branches:
+      - main
+
 jobs:
-  job1:
+  determine-changes:
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
+
     steps:
-      - id: set-matrix
-        run: echo "matrix={\"include\":[{\"project\":\"foo\",\"config\":\"Debug\"},{\"project\":\"bar\",\"config\":\"Release\"}]}" >> $GITHUB_OUTPUT
-  job2:
-    needs: job1
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+        with:
+            fetch-depth: 0 # Fetch full history
+
+      - name: Get List of Changed Files
+        id: changed-files
+        run: |
+          export CHANGED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
+          echo changed files: $CHANGED_FILES
+          CHANGED_FILES="$(python3 -c "import os;files=os.getenv('CHANGED_FILES');files=files.split('\n');exec('''for f in files:print(os.path.join(*[x + '/build.sh' for x in f.split('/')[:2]]), end=' ')''');")"
+          echo changed files: $CHANGED_FILES
+          declare -a EXTRACTORS=()
+          for FILE in ${CHANGED_FILES[@]}; do
+            EXTRACTORS+=("{\"directory\":\"$FILE\"}");
+          done
+          echo "matrix=[${EXTRACTORS[@]}]"
+          echo "matrix={\"include\":[{\"project\":\"foo\",\"config\":\"Debug\"},{\"project\":\"bar\",\"config\":\"Release\"}]}" >> $GITHUB_OUTPUT
+# echo "matrix=([${EXTRACTORS[@]}])" >> $GITHUB_ENV
+
+  deploy:
+    needs: determine-changes
     runs-on: ubuntu-latest
     strategy:
-      matrix: ${{ fromJSON(needs.job1.outputs.matrix) }}
+      matrix:
+        extractor: ${{ fromJson(needs.determine-changes.outputs.matrix) }}
+
+    environment: ${{ matrix.extractor.environment }}
     steps:
-      - run: echo "Matrix - Project ${{ matrix.project }}, Config ${{ matrix.config }}"
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.9"
+      - name: Build and Deploy
+        run: |
+          echo ${{ matrix.extractor.directory }} && bash build.sh
