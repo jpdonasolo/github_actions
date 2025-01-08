@@ -8,8 +8,8 @@ on:
 jobs:
   determine-changes:
     runs-on: ubuntu-latest
-    outputs:
-      matrix: ${{ steps.changed-files.outputs.matrix }}
+    environment: 
+      name: dev
 
     steps:
       - name: Checkout Repository
@@ -17,35 +17,7 @@ jobs:
         with:
             fetch-depth: 0 # Fetch full history
 
-      - name: Get List of Changed Files
-        id: changed-files
+      - name: Print
         run: |
-          export CHANGED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
-          echo changed files: $CHANGED_FILES
-          
-          CHANGED_FILES="$(python3 -c "import os;files=os.getenv('CHANGED_FILES');files=files.split('\n');files=[os.path.join(*[x for x in f.split('/')[:2]]) + '/build.sh' for f in files];print(str(files).replace(\"'\", '\\\"'))")"
-          
-          echo $CHANGED_FILES
-          echo 'matrix=[".github/workflows/build.sh"]'
-          echo "matrix=$CHANGED_FILES" >> "$GITHUB_OUTPUT"
-          
-
-  deploy:
-    needs: determine-changes
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        extractor: ${{ fromJson(needs.determine-changes.outputs.matrix) }}
-
-    environment: ${{ matrix.extractor.environment }}
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
-
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: "3.9"
-      - name: Build and Deploy
-        run: |
-          echo ${{ matrix.extractor.directory }} && bash build.sh
+          echo ${{ vars.VARIAVEL }}
+          echo ${{ secrets.VARIAVEL }}
