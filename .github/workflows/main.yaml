@@ -27,7 +27,7 @@ jobs:
           
           echo $CHANGED_FILES
           echo 'matrix=[".github/workflows/build.sh"]'
-          echo 'matrix=[".github/workflows/build.sh"]' >> "$GITHUB_OUTPUT"
+          echo "matrix=$CHANGED_FILES" >> "$GITHUB_OUTPUT"
           
 
   deploy:
