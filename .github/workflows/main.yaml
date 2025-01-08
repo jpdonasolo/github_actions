@@ -22,7 +22,7 @@ jobs:
         run: |
           export CHANGED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
           echo changed files: $CHANGED_FILES
-          CHANGED_FILES=$(python3 -c "import os;files=os.getenv('CHANGED_FILES');files=files.split('\n');exec('''for f in files:print(os.path.join(*[x for x in f.split('/')[:2]]), sep='<<')''');print('EOF')")
+          CHANGED_FILES=$(python3 -c "import os;files=os.getenv('CHANGED_FILES');files=files.split('\n');exec('''for f in files:print(os.path.join(*[x for x in f.split('/')[:2]]), sep='<<')''');")
           echo changed files: $CHANGED_FILES
           echo "CHANGED_FILES=$CHANGED_FILES" >> "$GITHUB_OUTPUT"
 
