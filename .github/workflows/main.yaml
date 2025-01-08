@@ -31,8 +31,8 @@ jobs:
         id: set-matrix
         run: |
           declare -a EXTRACTORS=()
-          export CHANGED_FILES=${{ steps.changed-files.outputs.CHANGED_FILES }}
-          echo changed files: ${CHANGED_FILES[@]}
+          export CHANGED_FILES="${{ steps.changed-files.outputs.CHANGED_FILES }}"
+          echo changed files: ${CHANGED_FILES[@]}µ
           for FILE in ${CHANGED_FILES[@]}; do
             echo $FILE
             case $FILE in

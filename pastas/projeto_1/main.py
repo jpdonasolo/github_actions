@@ -1,1 +1,1 @@
-print("dS")
+print("d")
