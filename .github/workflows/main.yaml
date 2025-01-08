@@ -11,7 +11,7 @@ jobs:
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     env:
-      CHANGED_FILES: "d "
+      RUNNER_CHANGED_FILES: "d "
       
 
     steps:
@@ -23,16 +23,17 @@ jobs:
       - name: Get List of Changed Files
         id: changed-files
         run: |
-          export CHANGED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
-          CHANGED_FILES=$(python3 -c "import os;files=os.getenv('CHANGED_FILES');files=files.split('\n');exec('''for f in files:print(os.path.join(*[x for x in f.split('/')[:2]]))''')")
-          echo $CHANGED_FILES
+          echo changed files: $RUNNER_CHANGED_FILES
+          export RUNNER_CHANGED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
+          export RUNNER_CHANGED_FILES=$(python3 -c "import os;files=os.getenv('RUNNER_CHANGED_FILES');files=files.split('\n');exec('''for f in files:print(os.path.join(*[x for x in f.split('/')[:2]]))''')")
+          echo changed files: $RUNNER_CHANGED_FILES
 
       - name: Generate Matrix
         id: set-matrix
         run: |
           declare -a EXTRACTORS=()
-          echo changed files: $CHANGED_FILES
-          for FILE in $CHANGED_FILES; do
+          echo changed files: $RUNNER_CHANGED_FILES
+          for FILE in $RUNNER_CHANGED_FILES; do
             case $FILE in
               pastas/projeto_1)
                 EXTRACTORS+=("{\"name\":\"projeto_1\",\"directory\":\"pastas/projeto_1\",\"environment\":\"prod\"}");;
