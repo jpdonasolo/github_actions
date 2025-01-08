@@ -11,7 +11,7 @@ jobs:
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     env:
-      RUNNER_CHANGED_FILES: "d "
+      RUNNER_CHANGED_FILES: "NUA E CRUA"
       
 
     steps:
@@ -24,8 +24,8 @@ jobs:
         id: changed-files
         run: |
           echo changed files: $RUNNER_CHANGED_FILES
-          export RUNNER_CHANGED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
-          export RUNNER_CHANGED_FILES=$(python3 -c "import os;files=os.getenv('RUNNER_CHANGED_FILES');files=files.split('\n');exec('''for f in files:print(os.path.join(*[x for x in f.split('/')[:2]]))''')")
+          RUNNER_CHANGED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
+          RUNNER_CHANGED_FILES=$(python3 -c "import os;files=os.getenv('RUNNER_CHANGED_FILES');files=files.split('\n');exec('''for f in files:print(os.path.join(*[x for x in f.split('/')[:2]]))''')")
           echo changed files: $RUNNER_CHANGED_FILES
 
       - name: Generate Matrix
