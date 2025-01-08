@@ -23,7 +23,7 @@ jobs:
           export CHANGED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
           echo changed files: $CHANGED_FILES
           
-          CHANGED_FILES="$(python3 -c "import os;files=os.getenv('CHANGED_FILES');files=files.split('\n');files=[os.path.join(*[x for x in f.split('/')[:2]]) + '/build.sh' for f in files];print(files)")"
+          CHANGED_FILES="$(python3 -c "import os;files=os.getenv('CHANGED_FILES');files=files.split('\n');files=[os.path.join(*[x for x in f.split('/')[:2]]) + '/build.sh' for f in files];print(str(files).replace(\"'\", '\"'))")"
           
           echo $CHANGED_FILES
           echo 'matrix=["red", "green", "blue"]'
