@@ -29,7 +29,8 @@ jobs:
             EXTRACTORS+=("{\"directory\":\"$FILE\"}");
           done
           echo "matrix=[${EXTRACTORS[@]}]"
-          echo "matrix=([${EXTRACTORS[@]}] | jq -r 'tostring')" >> $GITHUB_ENV
+          echo "matrix={\"include\":[{\"project\":\"foo\",\"config\":\"Debug\"},{\"project\":\"bar\",\"config\":\"Release\"}]}" >> $GITHUB_OUTPUT
+          # echo "matrix=([${EXTRACTORS[@]}])" >> $GITHUB_ENV
 
   deploy:
     needs: determine-changes
