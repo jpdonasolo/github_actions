@@ -20,7 +20,7 @@ jobs:
         id: changed-files
         run: |
           export CHANGED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
-          CHANGED_FILES=$(python3 -c "import os;files=os.getenv('CHANGED_FILES');files=files.split('\n');exec('''for f in files:print(os.path.join([x for x in f.split('/')[:2]]))''')")
+          CHANGED_FILES=$(python3 -c "import os;files=os.getenv('CHANGED_FILES');files=files.split('\n');exec('''for f in files:print(os.path.join(*[x for x in f.split('/')[:2]]))''')")
           echo $CHANGED_FILES
 
       - name: Generate Matrix
