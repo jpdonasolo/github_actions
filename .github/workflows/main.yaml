@@ -36,15 +36,15 @@ jobs:
           for FILE in $CHANGED_FILES; do
             case $FILE in
               pastas/projeto_1)
-                EXTRACTORS+=("{\"name\":\"projeto_1\",\"directory\":\"pastas/projeto_1\",\"environment\":\"prod\"}");;
+                EXTRACTORS+=("{"name":"projeto_1","directory":"pastas/projeto_1","environment":"prod"}");;
               pastas/projeto_2)
-                EXTRACTORS+=("{\"name\":\"projeto_2\",\"directory\":\"pastas/projeto_2\",\"environment\":\"dev\"}");;
+                EXTRACTORS+=("{"name":"projeto_2","directory":"pastas/projeto_2","environment":"dev"}");;
               pastas/projeto_3)
-                EXTRACTORS+=("{\"name\":\"projeto_3\",\"directory\":\"pastas/projeto_3\",\"environment\":\"dev\"}");;
+                EXTRACTORS+=("{"name":"projeto_3","directory":"pastas/projeto_3","environment":"dev"}");;
             esac
           done
           echo "matrix=[${EXTRACTORS[@]}]"
-          echo "matrix=[${EXTRACTORS[@]}]" | jq -r 'tostring' >> $GITHUB_ENV
+          echo "matrix=[${EXTRACTORS[@]}]" >> $GITHUB_ENV
           echo "::set-output name=matrix::${matrix}"
 
   deploy:
