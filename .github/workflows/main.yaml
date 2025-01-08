@@ -18,7 +18,7 @@ jobs:
             fetch-depth: 0 # Fetch full history
 
       - name: Get List of Changed Files
-        id: changed_files
+        id: changed-files
         run: |
           export CHANGED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
           echo changed files: $CHANGED_FILES
@@ -31,7 +31,7 @@ jobs:
         id: set-matrix
         run: |
           declare -a EXTRACTORS=()
-          export CHANGED_FILES=${{ steps.changed_files.outputs.CHANGED_FILES }}
+          export CHANGED_FILES=${{ steps.changed-files.outputs.CHANGED_FILES }}
           echo changed files: $CHANGED_FILES
           for FILE in $CHANGED_FILES; do
             case $FILE in
@@ -44,7 +44,7 @@ jobs:
             esac
           done
           echo "matrix=[${EXTRACTORS[@]}]"
-          echo "matrix=[${EXTRACTORS[@]}]" >> $GITHUB_ENV
+          echo "matrix=[${EXTRACTORS[@]}]" | jq -r 'tostring' >> $GITHUB_ENV
           echo "::set-output name=matrix::${matrix}"
 
   deploy:
