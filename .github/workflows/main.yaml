@@ -9,7 +9,7 @@ jobs:
   determine-changes:
     runs-on: ubuntu-latest
     outputs:
-      matrix: ${{ steps.set-matrix.outputs.matrix }}
+      matrix: ${{ steps.changed-files.outputs.matrix }}
 
     steps:
       - name: Checkout Repository
@@ -29,8 +29,8 @@ jobs:
             EXTRACTORS+=("{\"directory\":\"$FILE\"}");
           done
           echo "matrix=[${EXTRACTORS[@]}]"
-          echo "matrix={\"include\":[{\"project\":\"foo\",\"config\":\"Debug\"},{\"project\":\"bar\",\"config\":\"Release\"}]}" >> $GITHUB_OUTPUT
-# echo "matrix=([${EXTRACTORS[@]}])" >> $GITHUB_ENV
+          echo "matrix=([${EXTRACTORS[@]}])" >> $GITHUB_ENV
+          # echo "matrix={\"include\":[{\"project\":\"foo\",\"config\":\"Debug\"},{\"project\":\"bar\",\"config\":\"Release\"}]}" >> $GITHUB_OUTPUT
 
   deploy:
     needs: determine-changes
