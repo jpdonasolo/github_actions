@@ -10,6 +10,10 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
+    env:
+      CHANGED_FILES: "d "
+      
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
@@ -22,7 +26,6 @@ jobs:
           export CHANGED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
           CHANGED_FILES=$(python3 -c "import os;files=os.getenv('CHANGED_FILES');files=files.split('\n');exec('''for f in files:print(os.path.join(*[x for x in f.split('/')[:2]]))''')")
           echo $CHANGED_FILES
-          export CHANGED_FILES
 
       - name: Generate Matrix
         id: set-matrix
