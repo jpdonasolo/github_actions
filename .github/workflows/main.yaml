@@ -24,14 +24,14 @@ jobs:
           echo changed files: $CHANGED_FILES
           CHANGED_FILES=$(python3 -c "import os;files=os.getenv('CHANGED_FILES');files=files.split('\n');exec('''for f in files:print(os.path.join(*[x for x in f.split('/')[:2]]))''')")
           echo changed files: $CHANGED_FILES
-          run: echo "::set-output name=CHANGED_FILES::$CHANGED_FILES"
+          echo "::set-output name=CHANGED_FILES::$CHANGED_FILES"
 
 
       - name: Generate Matrix
         id: set-matrix
         run: |
           declare -a EXTRACTORS=()
-          export CHANGED_FILES=${{ steps.changed_files.outputs.my_output }}
+          export CHANGED_FILES=${{ steps.changed_files.outputs.CHANGED_FILES }}
           echo changed files: $CHANGED_FILES
           for FILE in $CHANGED_FILES; do
             case $FILE in
