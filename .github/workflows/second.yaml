@@ -1,0 +1,19 @@
+name: CI/CD for Extractors
+
+on:
+  workflow_dispatch:
+    inputs:
+      env:
+        description: 'Env'
+        required: true
+    
+
+jobs:
+  env:
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ github.event.inputs.env }}
+
+    steps:
+      - name: what_env_is_this
+        run: echo "${{secrets.VARIAVEL}}"
